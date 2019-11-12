@@ -6,10 +6,15 @@ const styles = theme => ({
     width: '300px',
     borderRadius: '0px',
     backgroundColor: '#227092',
+    '&:hover': {
+      background: '#1e6482'
+    },
     height: '35px',
     boxShadow: '0px 0px 2px black',
     color: 'white'
-  }
+    
+  },
+  
 });
 
 export default styles;

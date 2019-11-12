@@ -16,12 +16,13 @@ import Spinner from '../Spinner/Spinner'
 import styles from "./styles";
 
 class ChatList extends Component {
+  
   newChat = () => {
     console.log("new chat");
   };
 
   selectChat = index => {
-    console.log("select chat");
+    this.props.selectChatFunc(index)
   };
 
   render() {
