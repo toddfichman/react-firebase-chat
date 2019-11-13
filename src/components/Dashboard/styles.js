@@ -11,7 +11,8 @@ const styles = theme => ({
     },
     height: '35px',
     boxShadow: '0px 0px 2px black',
-    color: 'white'
+    color: 'white',
+    
     
   },
   

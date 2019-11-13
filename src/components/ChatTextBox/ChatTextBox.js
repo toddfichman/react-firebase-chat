@@ -16,7 +16,7 @@ class ChatTextBox extends Component {
   };
 
   userClickedInput = () => {
-    // console.log("clicked");
+    this.props.messageReadFunc()
   };
 
   submitMessage = () => {

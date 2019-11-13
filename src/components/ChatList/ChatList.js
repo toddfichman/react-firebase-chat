@@ -25,14 +25,15 @@ class ChatList extends Component {
     this.props.selectChatFunc(index)
   };
 
+  userIsSender = (chat) => {
+    return chat.messages[chat.messages.length - 1].sender === this.props.userEmail
+  }
+
   render() {
     const {
       classes,
       chats,
       userEmail,
-      history,
-      selectChatFunc,
-      newChatBtnFunc,
       selectedChatIndex
     } = this.props;
 
@@ -77,6 +78,13 @@ class ChatList extends Component {
                         </>
                       }
                     ></ListItemText>
+                    {
+                      chat.receiverHasRead === false && !this.userIsSender(chat) ? (
+                        <ListItemIcon>
+                          <NotificationImportant className={classes.unreadMessage} />
+                        </ListItemIcon>
+                      ) : null
+                    }
                   </ListItem>
                   <Divider></Divider>
                 </div>

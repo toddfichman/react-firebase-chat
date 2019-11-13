@@ -23,9 +23,10 @@ export class Dashboard extends Component {
     this.setState({ newChatFormVisible: true, selectedChat: null });
   };
 
-  selectChat = chatIndex => {
-    console.log(chatIndex);
-    this.setState({ selectedChat: chatIndex });
+  selectChat = async chatIndex => {
+    console.log('selectChat');
+    await this.setState({ selectedChat: chatIndex });
+    this.messageRead()
   };
 
   signOut = () => {
@@ -40,7 +41,7 @@ export class Dashboard extends Component {
     );
     firebase
       .firestore()
-      .collection('chats')
+      .collection("chats")
       .doc(docKey)
       .update({
         messages: firebase.firestore.FieldValue.arrayUnion({
@@ -49,13 +50,42 @@ export class Dashboard extends Component {
           timestamp: Date.now()
         }),
         receiverHasRead: false
-      })
+      });
   };
 
   // friend => user1:user2 (from firebase)
   buildDocKey = friend => {
-    console.log(friend[1], friend, 'friends')
+    
     return [this.state.email, friend].sort().join(":");
+  };
+
+  messageRead = () => {
+    const chatIndex = this.state.selectedChat
+    const docKey = this.buildDocKey(
+      this.state.chats[chatIndex].users.filter(
+        user => user !== this.state.email
+      )
+    );
+    
+
+    if (this.clickedChatWhereNotSender(chatIndex)) {
+      firebase
+        .firestore()
+        .collection("chats")
+        .doc(docKey)
+        .update({ receiverHasRead: true });
+    } else {
+      console.log('clicked message where user')
+    }
+  };
+
+
+  // return false if sender is current user, true otherwise
+  clickedChatWhereNotSender = chatIndex => {
+    
+    return this.state.chats[chatIndex].messages[
+      this.state.chats[chatIndex].messages.length - 1
+    ] !== this.state.email;
   };
 
   componentDidMount = () => {
@@ -98,7 +128,7 @@ export class Dashboard extends Component {
           <ChatView user={email} chat={chats[selectedChat]} />
         )}
         {selectedChat !== null ? (
-          <ChatTextBox submitMessageFunc={this.submitMessage} />
+          <ChatTextBox messageReadFunc={this.messageRead} submitMessageFunc={this.submitMessage} />
         ) : null}
 
         <Button className={classes.signOutBtn} onClick={this.signOut}>
